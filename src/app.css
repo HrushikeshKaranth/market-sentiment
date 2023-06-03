@@ -1,0 +1,46 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+h1{
+    font-size: 16px;
+    font-weight: 600;
+}
+h2{
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.app{
+    /* width: 100vw; */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1rem;
+    padding: 1rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.category{
+    padding: 10px;
+    border-radius: 5px;
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: .5rem;
+    border: 1px solid black;
+}
+.subCategory{
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+}
+.subCategory>input{
+    padding: 5px;
+    outline: none;
+    border: 1px solid black;
+    border-radius: 5px;
+}
