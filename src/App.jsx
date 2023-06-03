@@ -29,14 +29,20 @@ function App() {
       <div className="category">
         <h1>Nifty's range</h1>
         <div className="subCategory">
-          <h2>Max = 170 to 200 points</h2>
-          <h2>Mid = 120 to 150 points</h2>
-          <h2>Low = 60 to 80 points</h2>
+          <h2>Max = 170 to 200 points (0.75% to >1%)</h2>
+          <h2>Mid = 120 to 150 points (0.50% to 0.75%)</h2>
+          <h2>Low = 60 to 80 points (0.40% to 0.50%)</h2>
         </div>
         <h1>Notes</h1>
         <div className="subCategory">
           <h2>- Overall market sentiment/direction.</h2>
-          <h2>- Open interest diff above 30 Lakhs and increasing.</h2>
+          <h2>- Open interest diff of above 30 Lakhs and increasing.</h2>
+        </div>
+        <h1>Entry criterias</h1>
+        <div className="subCategory">
+          <h2>- Overall market sentiment.</h2>
+          <h2>- Price action.</h2>
+          <h2>- Open interest.</h2>
         </div>
       </div>
       <div className="category">
