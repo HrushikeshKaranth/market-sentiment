@@ -1,8 +1,7 @@
 import axios from "./axios";
 import { useEffect, useState } from "react";
-import './app.css';
-import { DataGrid } from '@mui/x-data-grid';
 import { indFormat } from "./indFormat";
+import './app.css';
 
 function App() {
   const [data, setData] = useState({
@@ -54,8 +53,8 @@ function App() {
     }
     await axios.get('', config)
       .then((res) => {
-        console.log(res.data);
-        console.log(Math.round(res.data.records.underlyingValue / 50) * 50);
+        // console.log(res.data);
+        // console.log(Math.round(res.data.records.underlyingValue / 50) * 50);
         selectedStrike ? setSelectedStrike(selectedStrike) : setSelectedStrike(Math.round(res.data.records.underlyingValue / 50) * 50);
         setOptionsChain(res.data.filtered);
         setPriceData(res.data.records);
@@ -89,19 +88,19 @@ function App() {
             )
             setOverallOI(
               (
-                overallStrikeData[0].PE.openInterest +
-                overallStrikeData[1].PE.openInterest +
-                overallStrikeData[2].PE.openInterest +
-                overallStrikeData[3].PE.openInterest +
-                overallStrikeData[4].PE.openInterest
+                arr[0].PE.openInterest +
+                arr[1].PE.openInterest +
+                arr[2].PE.openInterest +
+                arr[3].PE.openInterest +
+                arr[4].PE.openInterest
               )
               -
               (
-                overallStrikeData[0].CE.openInterest +
-                overallStrikeData[1].CE.openInterest +
-                overallStrikeData[2].CE.openInterest +
-                overallStrikeData[3].CE.openInterest +
-                overallStrikeData[4].CE.openInterest
+                arr[0].CE.openInterest +
+                arr[1].CE.openInterest +
+                arr[2].CE.openInterest +
+                arr[3].CE.openInterest +
+                arr[4].CE.openInterest
               )
             )
           }
@@ -109,9 +108,11 @@ function App() {
         }
         // console.log(filtered);
         // console.log(res.data.filtered.data[1].strikePrice);
+        console.log('Data Received!');
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+        console.error('Error Receiving Data!');
       })
   }
 
@@ -137,7 +138,7 @@ function App() {
   // console.log(data);
   // console.log(selectedStrike);
   // console.log(selectedStrikeData);
-  console.log(overallStrikeData);
+  // console.log(overallStrikeData);
   // console.log(overallChangeInOI);
   // console.log(overallOI);
 
@@ -275,7 +276,7 @@ function App() {
             <h2>Total Sell Qty: {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.totalSellQuantity)}</h2>
           </div>
           <div className="category">
-            Puts
+            PUTS
             <h2>-----------------------------------</h2>
             <h2>Total OI: {selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.openInterest)} </h2>
             <h2>Change in OI: {selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest)}</h2>
