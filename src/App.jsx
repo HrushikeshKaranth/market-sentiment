@@ -53,7 +53,7 @@ function App() {
     }
     await axios.get('', config)
       .then((res) => {
-        // console.log(res.data);
+        console.log(res.data);
         // console.log(Math.round(res.data.records.underlyingValue / 50) * 50);
         selectedStrike ? setSelectedStrike(selectedStrike) : setSelectedStrike(Math.round(res.data.records.underlyingValue / 50) * 50);
         setOptionsChain(res.data.filtered);

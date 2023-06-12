@@ -1,2 +1,0 @@
-*{box-sizing:border-box;margin:0;padding:0}h1{font-size:16px;font-weight:600}h2{font-size:14px;font-weight:500}.app{align-items:flex-start;gap:1rem;justify-content:flex-start;margin:1rem;padding:1rem}.app,.category{display:flex;flex-wrap:wrap}.category{border:1px solid #000;border-radius:5px;flex-direction:column;gap:.5rem;padding:10px;width:-webkit-max-content;width:max-content}.subCategory{display:flex;flex-direction:column;gap:.3rem}.subCategory>input{border:1px solid #000;border-radius:5px;outline:none;padding:5px}
-/*# sourceMappingURL=main.3df74005.css.map*/
