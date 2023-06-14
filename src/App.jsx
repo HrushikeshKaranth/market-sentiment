@@ -2,6 +2,7 @@ import axios from "./axios";
 import { useEffect, useState } from "react";
 import { indFormat } from "./indFormat";
 import './app.css';
+import Pivots from "./components/Pivots";
 
 function App() {
   const [data, setData] = useState({
@@ -14,7 +15,7 @@ function App() {
     p: '', s1: '', s2: '', s3: '', s4: '', r1: '', r2: '', r3: '', r4: ''
   })
 
-  const [selectedStrike, setSelectedStrike] = useState()
+  const [selectedStrike, setSelectedStrike] = useState();
 
   useEffect(() => {
     setCalData(
@@ -30,11 +31,17 @@ function App() {
   const [priceData, setPriceData] = useState([])
   const [overallStrikeData, setOverallStrikeData] = useState([])
   const [selectedStrikeData, setSelectedStrikeData] = useState([])
-
+  const [marketData, setMarketData] = useState([])
   const [overallChangeInOI, setOverallChangeInOI] = useState()
+  const [overallChangeInOICE, setOverallChangeInOICE] = useState()
+  const [overallChangeInOIPE, setOverallChangeInOIPE] = useState()
   const [overallOI, setOverallOI] = useState()
+  const [overallOICE, setOverallOICE] = useState()
+  const [overallOIPE, setOverallOIPE] = useState()
+  const [marketDataN, setMarketDataN] = useState([])
   useEffect(() => {
     // axios.get('https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY')
+    getMData();
     getOIData();
     const interval = setInterval(() => {
       getOIData();
@@ -43,6 +50,21 @@ function App() {
     return () => { clearInterval(interval) }
   }, [selectedStrike])
 
+  const marketDataUrl = 'https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%2050'
+  const marketDataBNUrl = 'https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20BANK'
+  const demo = 'https://www.nseindia.com/json/gainerLossersValue.json  '
+  const insiderTradingLink = 'https://www.nseindia.com/companies-listing/corporate-filings-insider-trading'
+
+  function getMData() {
+    axios.get(marketDataUrl)
+      .then((res) => {
+        setMarketDataN(res.data);
+        // console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }
   async function getOIData() {
     let config = {
       headers: {
@@ -53,7 +75,7 @@ function App() {
     }
     await axios.get('', config)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         // console.log(Math.round(res.data.records.underlyingValue / 50) * 50);
         selectedStrike ? setSelectedStrike(selectedStrike) : setSelectedStrike(Math.round(res.data.records.underlyingValue / 50) * 50);
         setOptionsChain(res.data.filtered);
@@ -70,14 +92,23 @@ function App() {
             }
             setOverallStrikeData({ ...arr })
             setOverallChangeInOI(
-              (
+              ((
                 arr[0].PE.changeinOpenInterest +
                 arr[1].PE.changeinOpenInterest +
                 arr[2].PE.changeinOpenInterest +
                 arr[3].PE.changeinOpenInterest +
                 arr[4].PE.changeinOpenInterest
               )
-              -
+                -
+                (
+                  arr[0].CE.changeinOpenInterest +
+                  arr[1].CE.changeinOpenInterest +
+                  arr[2].CE.changeinOpenInterest +
+                  arr[3].CE.changeinOpenInterest +
+                  arr[4].CE.changeinOpenInterest
+                ))
+            )
+            setOverallChangeInOICE(
               (
                 arr[0].CE.changeinOpenInterest +
                 arr[1].CE.changeinOpenInterest +
@@ -86,6 +117,17 @@ function App() {
                 arr[4].CE.changeinOpenInterest
               )
             )
+            setOverallChangeInOIPE(
+              (
+                arr[0].PE.changeinOpenInterest +
+                arr[1].PE.changeinOpenInterest +
+                arr[2].PE.changeinOpenInterest +
+                arr[3].PE.changeinOpenInterest +
+                arr[4].PE.changeinOpenInterest
+              )
+            )
+
+
             setOverallOI(
               (
                 arr[0].PE.openInterest +
@@ -101,6 +143,25 @@ function App() {
                 arr[2].CE.openInterest +
                 arr[3].CE.openInterest +
                 arr[4].CE.openInterest
+              )
+            )
+
+            setOverallOICE(
+              (
+                arr[0].CE.openInterest +
+                arr[1].CE.openInterest +
+                arr[2].CE.openInterest +
+                arr[3].CE.openInterest +
+                arr[4].CE.openInterest
+              )
+            )
+            setOverallOIPE(
+              (
+                arr[0].PE.openInterest +
+                arr[1].PE.openInterest +
+                arr[2].PE.openInterest +
+                arr[3].PE.openInterest +
+                arr[4].PE.openInterest
               )
             )
           }
@@ -141,67 +202,65 @@ function App() {
   // console.log(overallStrikeData);
   // console.log(overallChangeInOI);
   // console.log(overallOI);
+  // console.log(marketDataN);
 
   return (
     <div className="app">
       <div>
         <div className="category">
-          <h1>Nifty's range</h1>
-          <div className="subCategory">
-            <h2>Max = 170 to 200 points (0.75% to >1%)</h2>
-            <h2>Mid = 120 to 150 points (0.50% to 0.75%)</h2>
-            <h2>Low = 60 to 80 points (0.40% to 0.50%)</h2>
+          <div className="seperateSection">
+            <h1 className="ul">Nifty's range</h1>
+            <div className="subCategory">
+              <h2>Max = 170 to 200 points (0.75% to >1%)</h2>
+              <h2>Mid = 120 to 150 points (0.50% to 0.75%)</h2>
+              <h2>Low = 60 to 80 points (0.40% to 0.50%)</h2>
+            </div>
           </div>
-          <h1>Notes</h1>
-          <div className="subCategory">
-            <h2>- Overall market sentiment/direction.</h2>
-            <h2>- Open interest diff of above 30 Lakhs and increasing.</h2>
+          <div className="seperateSection">
+            <h1>Notes</h1>
+            <div className="subCategory">
+              <h2>- Overall market sentiment/direction.</h2>
+              <h2>- Open interest diff of above 30 Lakhs and increasing.</h2>
+            </div>
           </div>
-          <h1>Entry criterias</h1>
-          <div className="subCategory">
-            <h2>- Overall market sentiment.</h2>
-            <h2>- Price action.</h2>
-            <h2>- Open interest.</h2>
+          <div className="seperateSection">
+            <h1>Entry criterias</h1>
+            <div className="subCategory">
+              <h2>- Overall market sentiment.</h2>
+              <h2>- Price action.</h2>
+              <h2>- Open interest.</h2>
+            </div>
+          </div>
+        </div>
+        <div>
+          {marketDataN.data && <Pivots data={marketDataN} />}
+        </div>
+        <div className="category">
+          <div className="seperateSection">
+            <h1>Links</h1>
+            <div className="links">
+              <h1><a href="https://www.nseindia.com/companies-listing/corporate-filings-insider-trading" target='_blank'> NSE Insider Trading Link ➡</a></h1>
+              <h1><a href="https://www.nseindia.com/option-chain" target='_blank'> NSE Option Chain Link ➡</a></h1>
+            </div>
           </div>
         </div>
         <div className="category">
-          <h1>Standard Pivots</h1>
-          <div className="subCategory">
-            <input type="number" name="close" value={data.close} onChange={setChange} placeholder='Enter closing price' />
-          </div>
-          <div className="subCategory">
-            <input type="number" name="high" value={data.high} onChange={setChange} placeholder='Enter day high price' />
-          </div>
-          <div className="subCategory">
-            <input type="number" name="low" value={data.low} onChange={setChange} placeholder='Enter day low price' />
-          </div>
-          <div className="subCategory">
-            <button onClick={calculatePivots}>Calculate</button>
-          </div>
-          <div className="result">
-            <h2>R1 - {pivots.r1}</h2>
-            <h2>R2 - {pivots.r2}</h2>
-            <h2>R3 - {pivots.r3}</h2>
-            <h2>S1 - {pivots.s1}</h2>
-            <h2>S2 - {pivots.s2}</h2>
-            <h2>S3 - {pivots.s3}</h2>
+          <div className="seperateSection">
+            <h1>Percentage calculation</h1>
+            <div className="subCategory">
+              {/* <h2 className="text">Enter closing price</h2> */}
+              <input type="number" name="nifty" value={data.nifty} onChange={setChange} placeholder='Enter Closing Price' />
+            </div>
+            <div className="subCategory">
+              {/* <h2>Enter current price</h2> */}
+              <input type="number" name="sgx" value={data.sgx} onChange={setChange} placeholder='Enter Current Price' />
+            </div>
+            <div className="result">
+              <h1>= {calData.nifty} %</h1>
+            </div>
           </div>
         </div>
-        <div className="category">
-          <h1>Nifty calculation</h1>
-          <div className="subCategory">
-            <h2 className="text">Enter closing price of Nifty Futures</h2>
-            <input type="number" name="nifty" value={data.nifty} onChange={setChange} />
-          </div>
-          <div className="subCategory">
-            <h2>Enter current price of SGX Nifty</h2>
-            <input type="number" name="sgx" value={data.sgx} onChange={setChange} />
-          </div>
-          <div className="result">
-            <h1>{calData.nifty} %</h1>
-          </div>
-        </div>
-        <div className="category">
+        {/* <div className="category">
           <h1>USD/INR calculation</h1>
           <div className="subCategory">
             <h2 className="text">Enter closing price of USD/INR</h2>
@@ -228,9 +287,9 @@ function App() {
           <div className="result">
             <h1>{calData.dow} %</h1>
           </div>
-        </div>
+        </div> */}
       </div>
-      <div>
+      {/* <div>
         {priceData &&
           <div className="category">
             <h2>Nifty: {priceData.underlyingValue}</h2>
@@ -246,74 +305,121 @@ function App() {
             }>Difference: {indFormat.format(optionsChain.PE.totOI - optionsChain.CE.totOI)}</h2>
           </div>}
         </div>
+      </div> */}
+      <div>
 
-      </div>
-      {optionsChain.data && <div className="category">
-        <h1>
-          Nifty - {priceData.underlyingValue} <br/> 
-          {priceData.timestamp} <br/>
-          Expiry: {optionsChain.data[0].expiryDate} <br/>
-          Selected Strike: {selectedStrike}
-        </h1>
-        <select onChange={(e) => { setSelectedStrike(e.target.value) }}>
-          <option hidden>Select Strike</option>
-          {optionsChain.data ?
-            optionsChain.data.map((list) => {
-              return (
-                <option key={list.strikePrice} value={list.strikePrice}>{list.strikePrice}</option>
-              )
-            }) : <></>
-          }
-        </select>
-        <div className="divide">
-          <div className="category">
+        {optionsChain.data && <div className="category">
+          <div className="seperateSection">
+            {marketDataN.metadata && <div className="seperateSection">
+              <h1>NIFTY 50 - {priceData.underlyingValue}</h1>
+              <div>
+                <h2>Open - {marketDataN.metadata.open}</h2>
+                <h2>High - {marketDataN.metadata.high}</h2>
+                <h2>Low - {marketDataN.metadata.low}</h2>
+                <h2>Last - {marketDataN.metadata.last}</h2>
+              </div>
+            </div>}
+            <h1>Time : {priceData.timestamp}</h1>
+            <h1>Expiry: {optionsChain.data[0].expiryDate} </h1>
+            <h1>Selected Strike - {selectedStrike}</h1>
+            <select onChange={(e) => { setSelectedStrike(e.target.value) }}>
+              <option hidden>Select Strike</option>
+              {optionsChain.data ?
+                optionsChain.data.map((list) => {
+                  return (
+                    <option key={list.strikePrice} value={list.strikePrice}>{list.strikePrice}</option>
+                  )
+                }) : <></>
+              }
+            </select>
+          </div>
+          <div className="divide">
+            <div className="table">
+              <div className="seperateSection2">
+                <h1>Selected Strike - {selectedStrike}</h1>
+                <table>
+                  <tr>
+                    <th colSpan={2} style={{ color: 'red' }}>CALLS</th>
+                    {/* <th>STRIKE</th> */}
+                    <th colSpan={2} style={{ color: 'green' }}>PUTS</th>
+                  </tr>
+                  <tr>
+                    <th>Call Total</th>
+                    <th>Call Change</th>
+                    {/* <th></th> */}
+                    <th>Put Total</th>
+                    <th>Put Change</th>
+                  </tr>
+                  {selectedStrikeData.CE && <tr>
+                    <td>{selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.openInterest * 50)} </td>
+                    <td style={selectedStrikeData.PE.changeinOpenInterest > selectedStrikeData.CE.changeinOpenInterest ? { color: 'green' } : { color: 'red' }}>
+                      {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.changeinOpenInterest * 50)}</td>
+                    {/* <td>{selectedStrike}</td> */}
+                    <td>{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.openInterest * 50)}</td>
+                    <td style={selectedStrikeData.PE.changeinOpenInterest > selectedStrikeData.CE.changeinOpenInterest ? { color: 'green' } : { color: 'red' }}
+                    >{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest * 50)}</td>
+                  </tr>}
+                </table>
+              </div>
+              <div className="seperateSection2">
+                {overallStrikeData[0] &&
+                  <h1>Selected Strikes
+                    [
+                    {overallStrikeData[0].strikePrice +',' + ' '}
+                    {overallStrikeData[1].strikePrice +','  + ' '}
+                    {overallStrikeData[2].strikePrice +','  + ' '}
+                    {overallStrikeData[3].strikePrice +','  + ' '}
+                    {overallStrikeData[4].strikePrice}
+                    ]
+                  </h1>
+                }
+                <table>
+                  <tr>
+                    <th colSpan={2} style={{ color: 'red' }}>CALLS</th>
+                    {/* <th>STRIKE</th> */}
+                    <th colSpan={2} style={{ color: 'green' }}>PUTS</th>
+                  </tr>
+                  <tr>
+                    <th>Call Total</th>
+                    <th>Call Change</th>
+                    {/* <th></th> */}
+                    <th>Put Total</th>
+                    <th>Put Change</th>
+                  </tr>
+                  {selectedStrikeData.CE && <tr>
+                    <td>{indFormat.format(overallOICE * 50)} </td>
+                    <td style={overallChangeInOIPE > overallChangeInOICE ? { color: 'green' } : { color: 'red' }}>
+                      {indFormat.format(overallChangeInOICE * 50)}</td>
+                    {/* <td>{selectedStrike}</td> */}
+                    <td>{indFormat.format(overallOIPE * 50)}</td>
+                    <td style={overallChangeInOIPE > overallChangeInOICE ? { color: 'green' } : { color: 'red' }}
+                    >{indFormat.format(overallChangeInOIPE * 50)}</td>
+                  </tr>}
+                </table>
+              </div>
+            </div>
+            {/* <div className="category">
             CALLS
-            <h2>-----------------------------------</h2>
-            <h2>Total OI: {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.openInterest)} </h2>
-            <h2>Change in OI: {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.changeinOpenInterest)}</h2>
             <h2>-----------------------------------</h2>
             <h2>Total Buy Qty: {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.totalBuyQuantity)}</h2>
             <h2>Total Sell Qty: {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.totalSellQuantity)}</h2>
-          </div>
-          <div className="category">
-            PUTS
             <h2>-----------------------------------</h2>
-            <h2>Total OI: {selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.openInterest)} </h2>
-            <h2>Change in OI: {selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest)}</h2>
+            PUTS
             <h2>-----------------------------------</h2>
             <h2>Total Buy Qty: {selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.totalBuyQuantity)}</h2>
             <h2>Total Sell Qty: {selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.totalSellQuantity)}</h2>
+          </div> */}
           </div>
-          {
-            selectedStrikeData.CE &&
-            <div className="category">
-              <h1
-                style={selectedStrikeData.PE.changeinOpenInterest - selectedStrikeData.CE.changeinOpenInterest > 0 ? { color: 'green' } : { color: 'red' }}
-              >Change in OI : {indFormat.format(selectedStrikeData.PE.changeinOpenInterest - selectedStrikeData.CE.changeinOpenInterest)}</h1>
-              <h1
-                style={selectedStrikeData.PE.openInterest - selectedStrikeData.CE.openInterest > 0 ? { color: 'green' } : { color: 'red' }}
-              >Total OI : {indFormat.format(selectedStrikeData.PE.openInterest - selectedStrikeData.CE.openInterest)}</h1>
-            </div>
-          }
-          {
-            selectedStrikeData.CE &&
-            <div className="category">
-              <h2>Buy/Sell</h2>
-              <h1>BUY: {indFormat.format(selectedStrikeData.PE.totalBuyQuantity - selectedStrikeData.CE.totalBuyQuantity)}</h1>
-              <h1>SELL: {indFormat.format(selectedStrikeData.PE.totalSellQuantity - selectedStrikeData.CE.totalSellQuantity)}</h1>
-            </div>
-          }
-        </div>
-      </div>}
-      {overallStrikeData[0] &&
+        </div>}
+        {/* {overallStrikeData[0] &&
         <div className="category">
-          <h2>Selected Strikes 
+          <h2>Selected Strikes
             [
-              {overallStrikeData[0].strikePrice + ' '}, 
-              {overallStrikeData[1].strikePrice + ' '}, 
-              {overallStrikeData[2].strikePrice + ' '}, 
-              {overallStrikeData[3].strikePrice + ' '}, 
-              {overallStrikeData[4].strikePrice}
+            {overallStrikeData[0].strikePrice + ' '},
+            {overallStrikeData[1].strikePrice + ' '},
+            {overallStrikeData[2].strikePrice + ' '},
+            {overallStrikeData[3].strikePrice + ' '},
+            {overallStrikeData[4].strikePrice}
             ]
           </h2>
           <div className="divide">
@@ -466,7 +572,8 @@ function App() {
               }</h1>
             </div>
           </div>
-        </div>}
+        </div>} */}
+      </div>
     </div>
   );
 }
