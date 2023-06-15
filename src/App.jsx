@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { indFormat } from "./indFormat";
 import './app.css';
 import Pivots from "./components/Pivots";
+import BankNifty from "./components/BankNifty";
 
 function App() {
   const [data, setData] = useState({
@@ -45,7 +46,7 @@ function App() {
     getOIData();
     const interval = setInterval(() => {
       getOIData();
-    }, 60000);
+    }, 120000);
 
     return () => { clearInterval(interval) }
   }, [selectedStrike])
@@ -54,6 +55,8 @@ function App() {
   const marketDataBNUrl = 'https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%20BANK'
   const demo = 'https://www.nseindia.com/json/gainerLossersValue.json  '
   const insiderTradingLink = 'https://www.nseindia.com/companies-listing/corporate-filings-insider-trading'
+  const optionChainBN = 'https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY'
+  const optionChainFN = 'https://www.nseindia.com/api/option-chain-indices?symbol=FINNIFTY'
 
   function getMData() {
     axios.get(marketDataUrl)
@@ -67,11 +70,7 @@ function App() {
   }
   async function getOIData() {
     let config = {
-      headers: {
-        // 'Accept-Encoding': 'gzip, deflate, br',
-        // 'Accept-Language': 'en-US,en-IN;q=0.9,en;q=0.8',
-        // 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-      }
+      headers: {}
     }
     await axios.get('', config)
       .then((res) => {
@@ -177,20 +176,6 @@ function App() {
       })
   }
 
-  function calculatePivots() {
-    let p = ((data.close + data.high + data.low) / 3);
-    setPivots({
-      ...pivots,
-      r4: parseFloat(data.high + (3 * (p - data.low))).toFixed(2),
-      r3: parseFloat(data.high + (2 * (p - data.low))).toFixed(2),
-      r2: parseFloat(p + (data.high - data.low)).toFixed(2),
-      r1: parseFloat(p + (p - data.low)).toFixed(2),
-      s1: parseFloat(p - (data.high - p)).toFixed(2),
-      s2: parseFloat(p - (data.high - data.low)).toFixed(2),
-      s3: parseFloat(data.low - (2 * (data.high - p))).toFixed(2),
-      s4: parseFloat(data.low - (3 * (data.high - p))).toFixed(2),
-    })
-  }
 
   function setChange(e) {
     setData({ ...data, [e.target.name]: parseFloat(e.target.value) });
@@ -307,7 +292,6 @@ function App() {
         </div>
       </div> */}
       <div>
-
         {optionsChain.data && <div className="category">
           <div className="seperateSection">
             {marketDataN.metadata && <div className="seperateSection">
@@ -365,10 +349,10 @@ function App() {
                 {overallStrikeData[0] &&
                   <h1>Selected Strikes
                     [
-                    {overallStrikeData[0].strikePrice +',' + ' '}
-                    {overallStrikeData[1].strikePrice +','  + ' '}
-                    {overallStrikeData[2].strikePrice +','  + ' '}
-                    {overallStrikeData[3].strikePrice +','  + ' '}
+                    {overallStrikeData[0].strikePrice + ',' + ' '}
+                    {overallStrikeData[1].strikePrice + ',' + ' '}
+                    {overallStrikeData[2].strikePrice + ',' + ' '}
+                    {overallStrikeData[3].strikePrice + ',' + ' '}
                     {overallStrikeData[4].strikePrice}
                     ]
                   </h1>
@@ -573,6 +557,9 @@ function App() {
             </div>
           </div>
         </div>} */}
+      </div>
+      <div>
+        <BankNifty />
       </div>
     </div>
   );
