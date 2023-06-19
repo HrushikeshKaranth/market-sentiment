@@ -46,7 +46,7 @@ function App() {
     getOIData();
     const interval = setInterval(() => {
       getOIData();
-    }, 120000);
+    }, 60000);
 
     return () => { clearInterval(interval) }
   }, [selectedStrike])
@@ -292,7 +292,7 @@ function App() {
         </div>
       </div> */}
       <div>
-        {optionsChain.data && <div className="category">
+        {optionsChain && optionsChain.data && <div className="category">
           <div className="seperateSection">
             {marketDataN.metadata && <div className="seperateSection">
               <h1>NIFTY 50 - {priceData.underlyingValue}</h1>
@@ -344,6 +344,9 @@ function App() {
                     >{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest * 50)}</td>
                   </tr>}
                 </table>
+                {selectedStrikeData.CE && <div className='category'>
+                  Difference = [{indFormat.format((selectedStrikeData.PE.changeinOpenInterest * 50) - (selectedStrikeData.CE.changeinOpenInterest * 50))}]
+                </div>}
               </div>
               <div className="seperateSection2">
                 {overallStrikeData[0] &&

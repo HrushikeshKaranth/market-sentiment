@@ -123,7 +123,7 @@ function BankNifty() {
         getOptionChainData();
         const interval = setInterval(() => {
             getOptionChainData();
-        }, 120000);
+        }, 60000);
 
         return () => { clearInterval(interval) }
     }, [selectedStrike])
@@ -183,6 +183,9 @@ function BankNifty() {
                                         >{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest * 25)}</td>
                                     </tr>}
                                 </table>
+                                {selectedStrikeData.CE && <div className='category'>
+                                    Difference = [{indFormat.format((selectedStrikeData.PE.changeinOpenInterest * 25)-(selectedStrikeData.CE.changeinOpenInterest * 25))}]
+                                </div>}
                             </div>
                             <div className="seperateSection2">
                                 {overallStrikeData[0] &&
