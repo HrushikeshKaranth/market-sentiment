@@ -183,9 +183,9 @@ function BankNifty() {
                                         >{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest * 25)}</td>
                                     </tr>}
                                 </table>
-                                {selectedStrikeData.CE && <div className='category'>
+                                {/* {selectedStrikeData.CE && <div className='category'>
                                     Difference = [{indFormat.format((selectedStrikeData.PE.changeinOpenInterest * 25)-(selectedStrikeData.CE.changeinOpenInterest * 25))}]
-                                </div>}
+                                </div>} */}
                             </div>
                             <div className="seperateSection2">
                                 {overallStrikeData[0] &&
@@ -222,6 +222,9 @@ function BankNifty() {
                                         >{indFormat.format(overallChangeInOIPE * 25)}</td>
                                     </tr>}
                                 </table>
+                                {selectedStrikeData.CE && <div className='category'>
+                                    Difference = [{indFormat.format((overallChangeInOIPE*25)-(overallChangeInOICE*25))}]
+                                </div>}
                             </div>
                         </div>
                     </div>

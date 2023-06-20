@@ -344,9 +344,9 @@ function App() {
                     >{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest * 50)}</td>
                   </tr>}
                 </table>
-                {selectedStrikeData.CE && <div className='category'>
+                {/* {selectedStrikeData.CE && <div className='category'>
                   Difference = [{indFormat.format((selectedStrikeData.PE.changeinOpenInterest * 50) - (selectedStrikeData.CE.changeinOpenInterest * 50))}]
-                </div>}
+                </div>} */}
               </div>
               <div className="seperateSection2">
                 {overallStrikeData[0] &&
@@ -383,6 +383,9 @@ function App() {
                     >{indFormat.format(overallChangeInOIPE * 50)}</td>
                   </tr>}
                 </table>
+                {selectedStrikeData.CE && <div className='category'>
+                  Difference = [{indFormat.format((overallChangeInOIPE * 50) - (overallChangeInOICE * 50))}]
+                </div>}
               </div>
             </div>
             {/* <div className="category">
