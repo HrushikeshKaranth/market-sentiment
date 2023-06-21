@@ -2,9 +2,9 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { indFormat } from '../indFormat';
 
-function BankNifty() {
+function FinNifty() {
 
-    const optionChainBN = 'https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY';
+    const optionChainBN = 'https://www.nseindia.com/api/option-chain-indices?symbol=FINNIFTY';
     const [selectedStrike, setSelectedStrike] = useState()
     const [optionChain, setOptionChain] = useState([])
     const [priceData, setPriceData] = useState([])
@@ -20,10 +20,10 @@ function BankNifty() {
     const [marketDataN, setMarketDataN] = useState([])
 
     async function getOptionChainData() {
-        await axios.get('https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY')
+        await axios.get('https://www.nseindia.com/api/option-chain-indices?symbol=FINNIFTY')
             .then((res) => {
-                // console.log(res.data);
-                selectedStrike ? setSelectedStrike(selectedStrike) : setSelectedStrike(Math.round(res.data.records.underlyingValue / 100) * 100);
+                console.log(res);
+                selectedStrike ? setSelectedStrike(selectedStrike) : setSelectedStrike(Math.round(res.data.records.underlyingValue / 50) * 50);
                 setOptionChain(res.data.filtered);
                 setPriceData(res.data.records);
                 let filtered = [];
@@ -38,13 +38,14 @@ function BankNifty() {
                         }
                         setOverallStrikeData({ ...arr })
                         setOverallChangeInOI(
-                            ((
-                                arr[0].PE.changeinOpenInterest +
-                                arr[1].PE.changeinOpenInterest +
-                                arr[2].PE.changeinOpenInterest +
-                                arr[3].PE.changeinOpenInterest +
-                                arr[4].PE.changeinOpenInterest
-                            )
+                            (
+                                (
+                                    arr[0].PE.changeinOpenInterest +
+                                    arr[1].PE.changeinOpenInterest +
+                                    arr[2].PE.changeinOpenInterest +
+                                    arr[3].PE.changeinOpenInterest +
+                                    arr[4].PE.changeinOpenInterest
+                                )
                                 -
                                 (
                                     arr[0].CE.changeinOpenInterest +
@@ -72,7 +73,6 @@ function BankNifty() {
                                 arr[4].PE.changeinOpenInterest
                             )
                         )
-
 
                         setOverallOI(
                             (
@@ -132,13 +132,13 @@ function BankNifty() {
                 {optionChain.data && <div className="category">
                     <div className="seperateSection">
                         {priceData && <div className="seperateSection">
-                            <h1>BANKNIFTY - {priceData.underlyingValue}</h1>
-                            <div>
+                            <h1>FINNIFTY - {priceData.underlyingValue}</h1>
+                            {/* <div>
                                 <h2>Open - {priceData.index.open}</h2>
                                 <h2>High - {priceData.index.high}</h2>
                                 <h2>Low - {priceData.index.low}</h2>
                                 <h2>Last - {priceData.index.last}</h2>
-                            </div>
+                            </div> */}
                         </div>}
                         <h1>Time : {priceData.timestamp}</h1>
                         <h1>Expiry: {optionChain.data[0].expiryDate} </h1>
@@ -172,13 +172,13 @@ function BankNifty() {
                                         <th>Put Change</th>
                                     </tr>
                                     {selectedStrikeData.CE && <tr>
-                                        <td>{selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.openInterest * 25)} </td>
+                                        <td>{selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.openInterest * 40)} </td>
                                         <td style={selectedStrikeData.PE.changeinOpenInterest > selectedStrikeData.CE.changeinOpenInterest ? { color: 'green' } : { color: 'red' }}>
-                                            {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.changeinOpenInterest * 25)}</td>
+                                            {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.changeinOpenInterest * 40)}</td>
                                         {/* <td>{selectedStrike}</td> */}
-                                        <td>{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.openInterest * 25)}</td>
+                                        <td>{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.openInterest * 40)}</td>
                                         <td style={selectedStrikeData.PE.changeinOpenInterest > selectedStrikeData.CE.changeinOpenInterest ? { color: 'green' } : { color: 'red' }}
-                                        >{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest * 25)}</td>
+                                        >{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest * 40)}</td>
                                     </tr>}
                                 </table>
                             </div>
@@ -208,17 +208,17 @@ function BankNifty() {
                                         <th>Put Change</th>
                                     </tr>
                                     {selectedStrikeData.CE && <tr>
-                                        <td>{indFormat.format(overallOICE * 25)} </td>
+                                        <td>{indFormat.format(overallOICE * 40)} </td>
                                         <td style={overallChangeInOIPE > overallChangeInOICE ? { color: 'green' } : { color: 'red' }}>
-                                            {indFormat.format(overallChangeInOICE * 25)}</td>
+                                            {indFormat.format(overallChangeInOICE * 40)}</td>
                                         {/* <td>{selectedStrike}</td> */}
-                                        <td>{indFormat.format(overallOIPE * 25)}</td>
+                                        <td>{indFormat.format(overallOIPE * 40)}</td>
                                         <td style={overallChangeInOIPE > overallChangeInOICE ? { color: 'green' } : { color: 'red' }}
-                                        >{indFormat.format(overallChangeInOIPE * 25)}</td>
+                                        >{indFormat.format(overallChangeInOIPE * 40)}</td>
                                     </tr>}
                                 </table>
                                 {selectedStrikeData.CE && <div className='category'>
-                                    Difference = [{indFormat.format((overallChangeInOIPE * 25) - (overallChangeInOICE * 25))}]
+                                    Difference = [{indFormat.format((overallChangeInOIPE * 40) - (overallChangeInOICE * 40))}]
                                 </div>}
                             </div>
                         </div>
@@ -229,4 +229,4 @@ function BankNifty() {
     )
 }
 
-export default BankNifty
+export default FinNifty

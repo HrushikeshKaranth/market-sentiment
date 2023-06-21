@@ -4,6 +4,7 @@ import { indFormat } from "./indFormat";
 import './app.css';
 import Pivots from "./components/Pivots";
 import BankNifty from "./components/BankNifty";
+import FinNifty from "./components/FinNifty";
 
 function App() {
   const [data, setData] = useState({
@@ -164,10 +165,7 @@ function App() {
               )
             )
           }
-          // let filtered = res.data.filtered.data[1];
         }
-        // console.log(filtered);
-        // console.log(res.data.filtered.data[1].strikePrice);
         console.log('Data Received!');
       })
       .catch((err) => {
@@ -175,7 +173,6 @@ function App() {
         console.error('Error Receiving Data!');
       })
   }
-
 
   function setChange(e) {
     setData({ ...data, [e.target.name]: parseFloat(e.target.value) });
@@ -233,11 +230,9 @@ function App() {
           <div className="seperateSection">
             <h1>Percentage calculation</h1>
             <div className="subCategory">
-              {/* <h2 className="text">Enter closing price</h2> */}
               <input type="number" name="nifty" value={data.nifty} onChange={setChange} placeholder='Enter Closing Price' />
             </div>
             <div className="subCategory">
-              {/* <h2>Enter current price</h2> */}
               <input type="number" name="sgx" value={data.sgx} onChange={setChange} placeholder='Enter Current Price' />
             </div>
             <div className="result">
@@ -245,52 +240,7 @@ function App() {
             </div>
           </div>
         </div>
-        {/* <div className="category">
-          <h1>USD/INR calculation</h1>
-          <div className="subCategory">
-            <h2 className="text">Enter closing price of USD/INR</h2>
-            <input type="number" name="usdinr" value={data.usdinr} onChange={setChange} />
-          </div>
-          <div className="subCategory">
-            <h2>Enter current price of USD/INR</h2>
-            <input type="number" name="usdinrcur" value={data.usdinrcur} onChange={setChange} />
-          </div>
-          <div className="result">
-            <h1>{calData.usdinr} %</h1>
-          </div>
-        </div>
-        <div className="category">
-          <h1>Dow Jones calculation</h1>
-          <div className="subCategory">
-            <h2 className="text">Enter closing price of DOW</h2>
-            <input type="number" name="dow" value={data.dow} onChange={setChange} />
-          </div>
-          <div className="subCategory">
-            <h2>Enter current price of Dow</h2>
-            <input type="number" name="dowcur" value={data.dowcur} onChange={setChange} />
-          </div>
-          <div className="result">
-            <h1>{calData.dow} %</h1>
-          </div>
-        </div> */}
       </div>
-      {/* <div>
-        {priceData &&
-          <div className="category">
-            <h2>Nifty: {priceData.underlyingValue}</h2>
-            <h2>Time Stamp: {priceData.timestamp}</h2>
-          </div>}
-        <div className="category">
-          <h2>Total Open Interest</h2>
-          {optionsChain.CE && <div className="subCategory">
-            {optionsChain.CE && <h2>CE OI: {indFormat.format(optionsChain.CE.totOI)}</h2>}
-            {optionsChain.PE && <h2>PE OI: {indFormat.format(optionsChain.PE.totOI)}</h2>}
-            <h2 style={
-              optionsChain.PE.totOI - optionsChain.CE.totOI < 0 ? { color: 'red' } : { color: 'green' }
-            }>Difference: {indFormat.format(optionsChain.PE.totOI - optionsChain.CE.totOI)}</h2>
-          </div>}
-        </div>
-      </div> */}
       <div>
         {optionsChain && optionsChain.data && <div className="category">
           <div className="seperateSection">
@@ -344,9 +294,6 @@ function App() {
                     >{selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.changeinOpenInterest * 50)}</td>
                   </tr>}
                 </table>
-                {/* {selectedStrikeData.CE && <div className='category'>
-                  Difference = [{indFormat.format((selectedStrikeData.PE.changeinOpenInterest * 50) - (selectedStrikeData.CE.changeinOpenInterest * 50))}]
-                </div>} */}
               </div>
               <div className="seperateSection2">
                 {overallStrikeData[0] &&
@@ -388,184 +335,14 @@ function App() {
                 </div>}
               </div>
             </div>
-            {/* <div className="category">
-            CALLS
-            <h2>-----------------------------------</h2>
-            <h2>Total Buy Qty: {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.totalBuyQuantity)}</h2>
-            <h2>Total Sell Qty: {selectedStrikeData.CE && indFormat.format(selectedStrikeData.CE.totalSellQuantity)}</h2>
-            <h2>-----------------------------------</h2>
-            PUTS
-            <h2>-----------------------------------</h2>
-            <h2>Total Buy Qty: {selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.totalBuyQuantity)}</h2>
-            <h2>Total Sell Qty: {selectedStrikeData.PE && indFormat.format(selectedStrikeData.PE.totalSellQuantity)}</h2>
-          </div> */}
           </div>
         </div>}
-        {/* {overallStrikeData[0] &&
-        <div className="category">
-          <h2>Selected Strikes
-            [
-            {overallStrikeData[0].strikePrice + ' '},
-            {overallStrikeData[1].strikePrice + ' '},
-            {overallStrikeData[2].strikePrice + ' '},
-            {overallStrikeData[3].strikePrice + ' '},
-            {overallStrikeData[4].strikePrice}
-            ]
-          </h2>
-          <div className="divide">
-            <div className="category">
-              <h2>Total Overall change in OI</h2>
-              <h2>----------------------</h2>
-              <div className="divide">
-                <div className="category">
-                  <h2 style={{ color: 'red' }}>CALLS : {
-                    indFormat.format(
-                      (
-                        overallStrikeData[0].CE.changeinOpenInterest +
-                        overallStrikeData[1].CE.changeinOpenInterest +
-                        overallStrikeData[2].CE.changeinOpenInterest +
-                        overallStrikeData[3].CE.changeinOpenInterest +
-                        overallStrikeData[4].CE.changeinOpenInterest
-                      )
-                    )
-                  }</h2>
-                  <h2 style={{ color: 'green' }}>PUTS : {
-                    indFormat.format(
-                      (
-                        overallStrikeData[0].PE.changeinOpenInterest +
-                        overallStrikeData[1].PE.changeinOpenInterest +
-                        overallStrikeData[2].PE.changeinOpenInterest +
-                        overallStrikeData[3].PE.changeinOpenInterest +
-                        overallStrikeData[4].PE.changeinOpenInterest
-                      )
-                    )
-                  }</h2>
-                </div>
-              </div>
-              <h1 style={overallChangeInOI && overallChangeInOI > 0 ? { color: 'green' } : { color: 'red' }}>Difference : {overallStrikeData[0] &&
-                indFormat.format(
-                  overallChangeInOI && overallChangeInOI
-                )
-              }</h1>
-            </div>
-            <div className="category">
-              <h2>Total Overall OI</h2>
-              <h2>----------------------</h2>
-              <div className="divide">
-                <div className="category">
-                  <h2 style={{ color: 'red' }}>CALLS : {
-                    indFormat.format(
-                      (
-                        overallStrikeData[0].CE.openInterest +
-                        overallStrikeData[1].CE.openInterest +
-                        overallStrikeData[2].CE.openInterest +
-                        overallStrikeData[3].CE.openInterest +
-                        overallStrikeData[4].CE.openInterest
-                      )
-                    )
-                  }</h2>
-                  <h2 style={{ color: 'green' }}>PUTS : {
-                    indFormat.format(
-                      (
-                        overallStrikeData[0].PE.openInterest +
-                        overallStrikeData[1].PE.openInterest +
-                        overallStrikeData[2].PE.openInterest +
-                        overallStrikeData[3].PE.openInterest +
-                        overallStrikeData[4].PE.openInterest
-                      )
-                    )
-                  }</h2>
-
-                </div>
-              </div>
-              <h1 style={overallOI && overallOI > 0 ? { color: 'green' } : { color: 'red' }}>Difference : {overallStrikeData[0] &&
-                indFormat.format(
-                  overallOI && overallOI
-                )
-              }</h1>
-            </div>
-            <div className="category">
-              <h2>Total Overall Buy-Sell</h2>
-              <h2>----------------------</h2>
-              <div className="divide">
-                <div className="category">
-                  <h2>CALLS</h2>
-                  <h2>-----</h2>
-                  <h2> BUY : {
-                    indFormat.format(
-                      (
-                        overallStrikeData[0].CE.totalBuyQuantity +
-                        overallStrikeData[1].CE.totalBuyQuantity +
-                        overallStrikeData[2].CE.totalBuyQuantity +
-                        overallStrikeData[3].CE.totalBuyQuantity +
-                        overallStrikeData[4].CE.totalBuyQuantity
-                      )
-                    )
-                  }</h2>
-                  <h2> SELL : {
-                    indFormat.format(
-                      (
-                        overallStrikeData[0].CE.totalSellQuantity +
-                        overallStrikeData[1].CE.totalSellQuantity +
-                        overallStrikeData[2].CE.totalSellQuantity +
-                        overallStrikeData[3].CE.totalSellQuantity +
-                        overallStrikeData[4].CE.totalSellQuantity
-                      )
-                    )
-                  }</h2>
-                </div>
-                <div className="category">
-                  <h2>PUTS</h2>
-                  <h2>-----</h2>
-                  <h2> BUY : {
-                    indFormat.format(
-                      (
-                        overallStrikeData[0].PE.totalBuyQuantity +
-                        overallStrikeData[1].PE.totalBuyQuantity +
-                        overallStrikeData[2].PE.totalBuyQuantity +
-                        overallStrikeData[3].PE.totalBuyQuantity +
-                        overallStrikeData[4].PE.totalBuyQuantity
-                      )
-                    )
-                  }</h2>
-                  <h2> SELL : {
-                    indFormat.format(
-                      (
-                        overallStrikeData[0].PE.totalSellQuantity +
-                        overallStrikeData[1].PE.totalSellQuantity +
-                        overallStrikeData[2].PE.totalSellQuantity +
-                        overallStrikeData[3].PE.totalSellQuantity +
-                        overallStrikeData[4].PE.totalSellQuantity
-                      )
-                    )
-                  }</h2>
-                </div>
-              </div>
-              <h1>Difference : {overallStrikeData[0] &&
-                indFormat.format(
-                  (
-                    overallStrikeData[0].PE.openInterest +
-                    overallStrikeData[1].PE.openInterest +
-                    overallStrikeData[2].PE.openInterest +
-                    overallStrikeData[3].PE.openInterest +
-                    overallStrikeData[4].PE.openInterest
-                  )
-                  -
-                  (
-                    overallStrikeData[0].CE.openInterest +
-                    overallStrikeData[1].CE.openInterest +
-                    overallStrikeData[2].CE.openInterest +
-                    overallStrikeData[3].CE.openInterest +
-                    overallStrikeData[4].CE.openInterest
-                  )
-                )
-              }</h1>
-            </div>
-          </div>
-        </div>} */}
       </div>
       <div>
         <BankNifty />
+      </div>
+      <div>
+        <FinNifty/>
       </div>
     </div>
   );
