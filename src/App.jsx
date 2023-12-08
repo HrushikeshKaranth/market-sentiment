@@ -17,8 +17,15 @@ function App() {
     p: '', s1: '', s2: '', s3: '', s4: '', r1: '', r2: '', r3: '', r4: ''
   })
 
-  const [selectedStrike, setSelectedStrike] = useState();
+  const [advdec, setAdvdec] = useState({
+    advance:'', decline:''
+  })
+  const [stocksData, setStocksData] = useState({})
 
+  const [selectedStrike, setSelectedStrike] = useState();
+  const [perc, setPerc] = useState({
+    posPerc:0, negPerc:0, netPerc:0
+  })
   useEffect(() => {
     setCalData(
       {
@@ -63,7 +70,23 @@ function App() {
     axios.get(marketDataUrl)
       .then((res) => {
         setMarketDataN(res.data);
-        // console.log(res.data);
+        setAdvdec({...data, advance:res.data.advance.advances, decline:res.data.advance.declines, unchanged:res.data.advance.unchanged})
+        setStocksData(res.data.data)
+        console.log(res.data.data);
+        let net = 0;
+        let pos = 0, neg = 0;
+        for (let i = 1; i < res.data.data.length; i++) {
+          if(res.data.data[i].pChange>0){
+            pos = pos + Number((res.data.data[i].lastPrice * res.data.data[i].pChange)/100)
+          }
+          else{
+            neg = neg - Number((res.data.data[i].lastPrice * res.data.data[i].pChange)/100)
+          }
+        }
+        console.log(perc.posPerc);
+        net = pos-neg;
+        setPerc({...perc, netPerc: net, posPerc:pos, negPerc: neg})
+        console.log(perc);
       })
       .catch((err) => {
         console.log(err);
@@ -223,6 +246,14 @@ function App() {
             <div className="links">
               <h1><a href="https://www.nseindia.com/companies-listing/corporate-filings-insider-trading" target='_blank'> NSE Insider Trading Link ➡</a></h1>
               <h1><a href="https://www.nseindia.com/option-chain" target='_blank'> NSE Option Chain Link ➡</a></h1>
+            </div>
+          </div>
+          <div className="seperateSection">
+            <h1>Advance Decline</h1>
+            <div className="links">
+              <h1>Advances : {advdec.advance}</h1>
+              <h1>Declines : {advdec.decline}</h1>
+              <h1>Unchanged : {advdec.unchanged}</h1>
             </div>
           </div>
         </div>
