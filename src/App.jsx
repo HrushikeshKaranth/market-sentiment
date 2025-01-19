@@ -26,6 +26,7 @@ function App() {
   const [perc, setPerc] = useState({
     posPerc:0, negPerc:0, netPerc:0
   })
+
   useEffect(() => {
     setCalData(
       {
@@ -48,6 +49,7 @@ function App() {
   const [overallOICE, setOverallOICE] = useState()
   const [overallOIPE, setOverallOIPE] = useState()
   const [marketDataN, setMarketDataN] = useState([])
+
   useEffect(() => {
     // axios.get('https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY')
     getMData();
@@ -70,11 +72,11 @@ function App() {
     axios.get(marketDataUrl)
       .then((res) => {
         setMarketDataN(res.data);
+        // console.log(res.data);
         setAdvdec({...data, advance:res.data.advance.advances, decline:res.data.advance.declines, unchanged:res.data.advance.unchanged})
         setStocksData(res.data.data)
-        console.log(res.data.data);
-        let net = 0;
-        let pos = 0, neg = 0;
+        // console.log(res.data.data);
+        let net = 0, pos = 0, neg = 0;
         for (let i = 1; i < res.data.data.length; i++) {
           if(res.data.data[i].pChange>0){
             pos = pos + Number((res.data.data[i].lastPrice * res.data.data[i].pChange)/100)
@@ -83,10 +85,10 @@ function App() {
             neg = neg - Number((res.data.data[i].lastPrice * res.data.data[i].pChange)/100)
           }
         }
-        console.log(perc.posPerc);
+        // console.log(perc.posPerc);
         net = pos-neg;
         setPerc({...perc, netPerc: net, posPerc:pos, negPerc: neg})
-        console.log(perc);
+        // console.log(perc);
       })
       .catch((err) => {
         console.log(err);
@@ -149,7 +151,6 @@ function App() {
                 arr[4].PE.changeinOpenInterest
               )
             )
-
 
             setOverallOI(
               (
@@ -277,12 +278,12 @@ function App() {
           <div className="seperateSection">
             {marketDataN.metadata && <div className="seperateSection">
               <h1>NIFTY 50 - {priceData.underlyingValue}</h1>
-              <div>
+              {/* <div>
                 <h2>Open - {marketDataN.metadata.open}</h2>
                 <h2>High - {marketDataN.metadata.high}</h2>
                 <h2>Low - {marketDataN.metadata.low}</h2>
                 <h2>Last - {marketDataN.metadata.last}</h2>
-              </div>
+              </div> */}
             </div>}
             <h1>Time : {priceData.timestamp}</h1>
             <h1>Expiry: {optionsChain.data[0].expiryDate} </h1>
@@ -369,12 +370,12 @@ function App() {
           </div>
         </div>}
       </div>
-      <div>
+      {/* <div>
         <BankNifty />
       </div>
       <div>
         <FinNifty/>
-      </div>
+      </div> */}
     </div>
   );
 }
