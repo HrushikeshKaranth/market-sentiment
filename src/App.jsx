@@ -1,5 +1,5 @@
 import axios from "./axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { indFormat } from "./indFormat";
 import './app.css';
 import Pivots from "./components/Pivots";
@@ -27,15 +27,15 @@ function App() {
     posPerc:0, negPerc:0, netPerc:0
   })
 
-  useEffect(() => {
-    setCalData(
-      {
-        ...calData,
-        nifty: parseFloat(((data.sgx - data.nifty) / data.nifty) * 100).toFixed(2),
-        usdinr: parseFloat(((data.usdinrcur - data.usdinr) / data.usdinr) * 100).toFixed(2),
-        dow: parseFloat(((data.dowcur - data.dow) / data.dow) * 100).toFixed(2),
-      });
-  }, [data])
+  // useEffect(() => {
+  //   setCalData(
+  //     {
+  //       ...calData,
+  //       nifty: parseFloat(((data.sgx - data.nifty) / data.nifty) * 100).toFixed(2),
+  //       usdinr: parseFloat(((data.usdinrcur - data.usdinr) / data.usdinr) * 100).toFixed(2),
+  //       dow: parseFloat(((data.dowcur - data.dow) / data.dow) * 100).toFixed(2),
+  //     });
+  // }, [data])
 
   const [optionsChain, setOptionsChain] = useState([])
   const [priceData, setPriceData] = useState([])
@@ -49,16 +49,17 @@ function App() {
   const [overallOICE, setOverallOICE] = useState()
   const [overallOIPE, setOverallOIPE] = useState()
   const [marketDataN, setMarketDataN] = useState([])
+  let interval = useRef();
 
   useEffect(() => {
     // axios.get('https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY')
     getMData();
     getOIData();
-    const interval = setInterval(() => {
+    interval.current = setInterval(() => {
       getOIData();
     }, 60000);
 
-    return () => { clearInterval(interval) }
+    return () => { clearInterval(interval.current) }
   }, [selectedStrike])
 
   const marketDataUrl = 'https://www.nseindia.com/api/equity-stockIndices?index=NIFTY%2050'
@@ -91,7 +92,8 @@ function App() {
         // console.log(perc);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
+        console.log("Data didn't arrive");
       })
   }
   async function getOIData() {
@@ -100,7 +102,7 @@ function App() {
     }
     await axios.get('', config)
       .then((res) => {
-        // console.log(res.data);
+        console.log(res.data);
         // console.log(Math.round(res.data.records.underlyingValue / 50) * 50);
         selectedStrike ? setSelectedStrike(selectedStrike) : setSelectedStrike(Math.round(res.data.records.underlyingValue / 50) * 50);
         setOptionsChain(res.data.filtered);
@@ -193,7 +195,7 @@ function App() {
         console.log('Data Received!');
       })
       .catch((err) => {
-        console.error(err);
+        // console.error(err);
         console.error('Error Receiving Data!');
       })
   }
